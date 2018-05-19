@@ -1,0 +1,68 @@
+buildscript {
+	ext {
+		springBootVersion = '2.0.2.RELEASE'
+		gradleDockerVersion = '1.2'
+	}
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath("se.transmode.gradle:gradle-docker:${gradleDockerVersion}")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+apply plugin: 'application'
+apply plugin: 'docker'
+
+group = 'com.amberved'
+version = '1.0.0'
+sourceCompatibility = 1.8
+mainClassName = 'com.amberved.DockerizedSpringBootDemoApplication'
+
+distDocker {
+    exposePort 8080
+}
+
+jar {
+    baseName = 'dockerizedspringbootdemoapplication'
+    manifest {
+        attributes  'Implementation-Title': 'Dockerized SpringBoot Demo Appplication',
+                    'Implementation-Version': version,
+                    'Main-Class': 'com.amberved.DockerizedSpringBootDemoApplication'
+    }
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	compile('org.springframework.boot:spring-boot-starter')
+    compile('org.springframework.boot:spring-boot-starter-web')
+	compile(group: 'org.springframework', name: 'spring-web', version: '5.0.6.RELEASE')
+
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+
+task buildDocker(type: Docker, dependsOn: build) {
+    baseImage = 'openjdk:8-jdk-alpine'
+    push = false
+    applicationName = jar.baseName
+
+    def tag = project.group + "/" + applicationName
+
+    print(tag)
+
+    addFile {
+        from jar
+        rename { 'app.jar' }
+    }
+    entryPoint(['java', '-Djava.security.egd=file:/dev/./urandom', '-jar', '/app.jar'])
+}
