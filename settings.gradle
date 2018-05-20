@@ -11,6 +11,10 @@ rootProject.name = 'springboot-demo'
 
 include "DockerizedSpringBootDemoApplication"
 
-/*
-include "DiscoveryService","SpringbootConfigClient", "DemoApplication", "DockerizedSpringBootDemoApplication", "DiscoveryClient", "Hello", "DiscoveryServer", "SimpleGradleDemo"
-*/
+include "ConfigClient"
+include "ConfigServer"
+
+include "DiscoveryClient"
+include "DiscoveryServer"
+include "DiscoveryService"
+
