@@ -3,11 +3,12 @@
 /bin/
 /build/
 /gradle/
+!gradle/wrapper/gradle-wrapper.jar
+
 gradlew
 gradlew.bat
 gradle.bat
 
-!gradle/wrapper/gradle-wrapper.jar
 
 ### STS ###
 .apt_generated
